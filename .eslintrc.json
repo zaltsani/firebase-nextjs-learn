@@ -2,6 +2,7 @@
   "extends": ["next/core-web-vitals", "next/typescript"],
   "rules": {
     "no-console": "off", // Disables the no-console rule
-    "react/no-unused-prop-types": "off" // Disables the unused prop-types rule
+    "react/no-unused-prop-types": "off", // Disables the unused prop-types rule,
+    "no-unused-vars": "off"
   }
 }
