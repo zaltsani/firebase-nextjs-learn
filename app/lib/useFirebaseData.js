@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { database } from '@/utils/firebaseConfig';
+import { database } from '@/firebase/firebaseConfig';
 import { getDatabase, ref, get, set, onValue, off } from "firebase/database";
 
 const useFirebaseData = (path) => {
