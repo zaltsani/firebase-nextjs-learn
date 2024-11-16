@@ -3,7 +3,7 @@
 import { useState } from "react";
 // import { AtSymbolIcon, KeyIcon, ArrowRightIcon, ExclamationCircleIcon } from ""
 import { Button } from "../ui/button";
-import signIn from "@/firebase/signIn"
+import signIn from "@/firebase/signin"
 import { useRouter } from "next/navigation";
 
 export default function Page() {
