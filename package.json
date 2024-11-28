@@ -9,13 +9,23 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ffmpeg/core": "^0.12.6",
+    "@ffmpeg/ffmpeg": "^0.12.10",
+    "@ffmpeg/util": "^0.12.1",
     "@heroicons/react": "^2.1.5",
+    "@mapbox/polyline": "^1.2.1",
+    "@turf/turf": "^7.1.0",
     "@types/leaflet": "^1.9.14",
+    "axios": "^1.7.7",
+    "canvas-to-video": "^1.0.1",
     "clsx": "^2.1.1",
     "firebase": "^11.0.2",
+    "h264-mp4-encoder": "^1.0.12",
     "heroicons": "^2.1.5",
+    "jsonwebtoken": "^9.0.2",
     "leaflet": "^1.9.4",
     "mapbox-gl": "^3.8.0",
+    "mp4-h264": "^1.0.9",
     "next": "15.0.3",
     "react": "18.2.0",
     "react-dom": "18.2.0"

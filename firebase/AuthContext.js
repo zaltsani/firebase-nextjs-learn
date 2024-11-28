@@ -10,25 +10,33 @@ import {
     getAuth,
     onAuthStateChanged
 } from "firebase/auth"
-import { app } from "./firebaseConfig";
+import { app, firestoredb } from "./firebaseConfig";
+import { collection, doc, getDoc } from "firebase/firestore";
 // import auth from "./firebaseConfig"
 
 const auth = getAuth(app);
-
 export const AuthContext = createContext({})
-
 export const useAuthContext = () => useContext(AuthContext)
 
-export const AuthContextProvider = ({
-    children,
-}) => {
+
+export function AuthContextProvider({ children }) {
     const [user, setUser] = useState(null)
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setUser(user)
+        const unsubscribe = auth.onAuthStateChanged(async (authUser) => {
+            if (authUser) {
+                const userId = authUser.uid
+
+                // Fetch user role from Firestore
+                const userDataRef = doc(firestoredb, `users/${userId}`)
+                const userDataSnap = await getDoc(userDataRef)
+                const userData = userDataSnap.data()
+                
+                // add role to authUser
+                authUser.role = userData.role
+
+                setUser(authUser)
             } else {
                 setUser(null)
             }

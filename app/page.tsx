@@ -1,12 +1,7 @@
 'use client'
 
-import Image from "next/image";
-import useFirebaseData from './lib/useFirebaseData'
-import dynamic from 'next/dynamic';
 import Link from "next/link";
 
-
-const Map = dynamic(() => import('@/components/Maps'), { ssr: false });
 
 export default function Home() {
 

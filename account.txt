@@ -1,0 +1,36 @@
+// Super Admin
+email: superadmin@gmail.com
+password: superadmin123
+
+
+// Admin
+email: admin@mail.com
+password: admin123
+devices: [001, 002, 003, 004]
+
+email: admin2@gmail.com
+password: admin234
+devices: [005, 006, 007]
+
+
+// User
+email: user1@gmail.com
+password: user1111
+
+email: user2@gmail.com
+password: user2222
+
+email: user3@gmail.com
+password: user3333
+
+email: user4@gmail.com
+password: user4444
+
+email: user5@gmail.com
+password: user5555
+
+email: user6@gmail.com
+password: user6666
+
+email: user3@gmail.com
+password: user7777

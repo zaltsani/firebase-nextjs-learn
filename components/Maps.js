@@ -5,42 +5,16 @@ import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css';
 import useFirebaseData from '@/app/lib/useFirebaseData';
 import getUserData from '@/app/lib/getUserData'
+import { doc, getDoc } from 'firebase/firestore';
+import { firestoredb } from '@/firebase/firebaseConfig';
 
 
 const Map = ({ locationData }) => {
-  // const userId = user?.uid
-  // const [userDetails, setUserDetails] = useState(null)
-  // const [userRole, setUserRole] = useState(null)
-  // const [loadingUserDetails, setLoadingUserDetails] = useState(true)
-
-  // useEffect(() => {
-  //   const fetchUserRole = async (userId) => {
-  //     try {
-  //       const fetchedRole = await getUserData(userId);
-  //       setUserDetails(fetchedRole);
-  //       setUserRole(fetchedRole.role)
-  //     } catch (error) {
-  //       console.log(error);
-  //     } finally {
-  //       setLoadingUserDetails(false)
-  //     }
-  //   }
-  //   fetchUserRole(userId)
-  // }, [userId])
-
-  // const [locationData, setLocationData] = useState([])
-
   
-  
-  // const { data, loading } = useFirebaseData('/')
-  // console.log(user?.email)
-
-
-  // From Here
-
   const mapRef = useRef()
   const mapContainerRef = useRef()
-  console.log(locationData)
+  const [trackingData, setTrackingData] = useState({})
+  const [locationDataUse, setLocationDataUse] = useState([])
 
   useEffect(() => {
     mapboxgl.accessToken = 'pk.eyJ1IjoiemFsdHNhbmkiLCJhIjoiY20zaWRxcnMyMG9udTJpb21lbXlmaWZycCJ9.hCSh8bn58x-dxfv-bS08Lg'
@@ -50,73 +24,88 @@ const Map = ({ locationData }) => {
       zoom: 10.12,
     });
 
-
-    for (const key in locationData) {
-      const data = locationData[key]
-      // console.log()
-      
-      new mapboxgl.Marker({ color: 'blue', rotation: 0 })
-        .setLngLat([data.long, data.lat])
-        .addTo(mapRef.current)
-    }
-
-
-    // To Here
-
-
-
-    // new mapboxgl.Marker()
-    //   .setLngLat([coord[1], coord[0]])
-    //   .addTo(mapRef.current);
-    // console.log(data['001'])
-    
-
-    // new mapboxgl.Marker({ color: 'blue', rotation: 0 })
-    //   .setLngLat([coord[1], coord[0]])
-    //   .addTo(mapRef.current);
-
-      // const geojson = {
-      //   type: 'FeatureCollection',
-      //   features: [
-      //     {
-      //       type: 'Feature',
-      //       geometry: {
-      //         type: 'LineString',
-      //         coordinates: trackArray // Use the data array directly here
-      //       },
-      //       properties: {
-      //         name: 'Tracking Path',
-      //         description: 'A sample tracking path'
-      //       }
-      //     }
-      //   ]
-      // };
-  
-      // // Add the polyline (track) to the map
-      // mapRef.current.on('load', () => {
-      //   mapRef.current.addSource('trackingPath', {
-      //     type: 'geojson',
-      //     data: geojson
-      //   });
-  
-      //   mapRef.current.addLayer({
-      //     id: 'trackingPathLayer',
-      //     type: 'line',
-      //     source: 'trackingPath',
-      //     paint: {
-      //       'line-color': '#FF5733', // Line color
-      //       'line-width': 4 // Line width
-      //     }
-      //   });
-      // });
-
-
-
     return () => {
-      mapRef.current.remove()
+      if (mapRef.current) {
+        mapRef.current.remove()
+        mapRef.current = null
+      }
     }
   }, [locationData])
 
+  useEffect(() => {
+    const markers = [];
+
+    for (const key in locationData) {
+      const data = locationData[key]
+      
+      const marker = new mapboxgl.Marker({ color: 'blue', rotation: 0 })
+        .setLngLat([data.long, data.lat])
+        .addTo(mapRef.current)
+
+      marker.getElement().addEventListener('click', () => {
+        const deviceId = key
+        setLocationDataUse(data)
+        const docRef = doc(firestoredb, `tracking/${deviceId}`)
+            const fetchTrackData = async () => {
+                const docSnap = await getDoc(docRef)
+                const data = docSnap.data().track
+                setTrackingData(data)
+            }
+            fetchTrackData()
+      })
+      markers.push(marker);
+    }
+    
+    return () => {
+      markers.forEach((marker) => marker.remove());
+    }
+  }, [locationData, trackingData])
+
+  useEffect(() => {
+    if (trackingData && Object.keys(trackingData).length) {
+      const coordinates = Object.values(trackingData).map(d => [d._long, d._lat])
+      coordinates.push([locationDataUse.long, locationDataUse.lat,])
+      // Geo Json
+      const geojson = {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            geometry: {
+              type: 'LineString',
+              coordinates: coordinates
+            },
+            properties: {
+              name: 'Tracking Path',
+              description: 'A sample tracking path'
+            }
+          }
+        ]
+      }
+
+      // Add the polyline (track) to the map
+      if (mapRef.current.isStyleLoaded()) {
+        if (mapRef.current.getSource('trackingPath')) {
+          mapRef.current.getSource('trackingPath').setData(geojson);
+        } else {
+          mapRef.current.addSource('trackingPath', {
+            type: 'geojson',
+            data: geojson,
+          });
+
+          mapRef.current.addLayer({
+            id: 'trackingPathLayer',
+            type: 'line',
+            source: 'trackingPath',
+            paint: {
+              'line-color': '#FF5733',
+              'line-width': 4,
+            },
+          });
+        }
+      }
+    }
+  }, [trackingData])
 
   return (
     <>

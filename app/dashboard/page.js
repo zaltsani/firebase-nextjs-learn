@@ -16,7 +16,8 @@ export default function Page() {
     const { user } = useAuthContext()
     const router = useRouter()
     const userId = user?.uid
-    // console.log(userId)
+
+    // console.log(user)
 
     const [userDetails, setUserDetails] = useState({})
     const [loadingUserDetails, setLoadingUserDetails] = useState(true)
@@ -36,13 +37,15 @@ export default function Page() {
             fetchUserDetails()
         }
     })
-    // console.log(userDetails)
 
+
+    // unauthenticated user cannot see this page
     useEffect(() => {
         if (user === null) {
             router.push('/login')
         }
     }, [user, router])
+
 
     useEffect(() => {
         if (!loadingUserDetails && userDetails?.role === 'admin') {
@@ -58,9 +61,9 @@ export default function Page() {
         } else if (!loadingUserDetails && userDetails?.role === 'user' && userDetails.device) {
             // const docRef = collection(`users/${userId}/device`)
             const devicesList = userDetails.device
-            console.log(userDetails.device)
+            // console.log(userDetails.device)
             for (const key of devicesList) {
-                console.log("device", key)
+                // console.log("device", key)
                 const dbRef = ref(database, `/${key}`)
                 const unsubscribe = onValue(dbRef, (snapshot) => {
                     const data = snapshot.val()
@@ -76,11 +79,8 @@ export default function Page() {
         }
     }, [loadingUserDetails, userId])
 
-    // if (!loadingLocationData) {
-    //     console.log(locationData)
-    // }
 
-
+    // Logout
     function handleLogout() {
         signOut(auth).then(() => {
             router.push('/')

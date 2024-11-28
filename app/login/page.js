@@ -5,6 +5,8 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import signIn from "@/firebase/signin"
 import { useRouter } from "next/navigation";
+import { doc, getDoc } from "firebase/firestore";
+import { firestoredb } from "@/firebase/firebaseConfig";
 
 export default function Page() {
     const [email, setEmail] = useState("")
@@ -20,9 +22,20 @@ export default function Page() {
             return console.log(error)
         }
 
-        console.log(result)
-        return router.push("/dashboard")
-        
+        const userId = result.user.uid
+
+        const userDataRef = doc(firestoredb, `users/${userId}`)
+        const userDataSnap = await getDoc(userDataRef)
+        const userData = userDataSnap.data()
+        const userRole = userData.role
+
+        if (userRole === 'superadmin') {
+            return router.push("/superadmin")
+        } else if (userRole === 'admin') {
+            return router.push("/admin")
+        } else if (userRole === 'user') {
+            return router.push("/user")
+        }
     }
 
     return (

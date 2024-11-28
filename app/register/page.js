@@ -4,6 +4,8 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 import signUp from "@/firebase/signup"
+import { doc, setDoc } from "firebase/firestore";
+import { firestoredb } from "@/firebase/firebaseConfig";
 
 export default function Page() {
     const [email, setEmail] = useState("")
@@ -19,7 +21,12 @@ export default function Page() {
             return alert(error.message)
         }
 
-        console.log(result)
+        const userId = result.user.uid
+        await setDoc(doc(firestoredb, "users", userId), {
+            "email": email,
+            "role": "user"
+        })
+
         return router.push("/dashboard")
 
         // createUserWithEmailAndPassword(auth, data.email, data.password)
