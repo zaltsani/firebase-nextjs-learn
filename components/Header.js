@@ -34,18 +34,10 @@ const Header = () => {
     ]
 
     return (
-        <header className="flex flex-row items-center w-full bg-blue-600 text-white justify-between py-0 px-2">
+        <header className="flex flex-row items-center w-full h-full bg-blue-600 text-white justify-between py-0 px-2">
             <div className="font-bold text-lg">
                 <Link href={'/'}>Tracking Websites</Link>
             </div>
-
-            {/* <Button>Flowbite</Button>
-            <Dropdown label="Dropdown Flowbite" dismissOnClick={false} style={{ zIndex: 2000 }}>
-                <Dropdown.Item>Dashboard</Dropdown.Item>
-                <Dropdown.Item>Settings</Dropdown.Item>
-                <Dropdown.Item>Earnings</Dropdown.Item>
-                <Dropdown.Item>Sign out</Dropdown.Item>
-            </Dropdown> */}
 
             <div className="hidden sm:flex justify-between items-center font-semibold">
                 {HeaderItems.map((item, index) => (
