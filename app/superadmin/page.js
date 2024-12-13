@@ -8,6 +8,12 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import { doc, getDoc } from "firebase/firestore"
 import { Button } from "../ui/button"
 import * as turf from '@turf/turf'
+import MonitorSideBar from '@/components/MonitorSideBar'
+import Link from "next/link"
+
+import { FaCarSide } from "react-icons/fa6";
+import { AiOutlineAlert } from "react-icons/ai";
+import { TbRoute } from "react-icons/tb";
 
 
 const Page = () => {
@@ -265,12 +271,13 @@ const Page = () => {
     }
 
     return (
-        <div className="relative w-full h-full">
+        <div className="flex w-full h-full">
+            <MonitorSideBar active='objects' />
             <div
                 ref={mapContainerRef}
-                className="w-full h-full"
+                className="w-screen h-full"
             />
-            <div className="absolute h-full top-0 left-0 bg-white rounded-r-lg pl-7 p-10" >
+            {/* <div className="absolute h-full top-0 left-0 bg-white rounded-r-lg pl-7 p-10" >
                 <p className="font-bold mb-2">Device List</p>
                 <ul className="gap-y-10">
                     {devicesList && (
@@ -285,7 +292,7 @@ const Page = () => {
                         ))
                     )}
                 </ul>
-            </div>
+            </div> */}
             <Button
                 className="absolute bottom-5 right-2"
                 onClick={() => playVideo()}
